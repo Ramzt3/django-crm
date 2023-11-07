@@ -16,13 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from website.views import home, login_user, logout_user, register_user, customer_record
+from website.views import (
+    delete_record,
+    home,
+    # login_user,
+    logout_user,
+    register_user,
+    customer_record,
+    delete_record,
+    add_record,
+)
 
 urlpatterns = [
-    path('', home, name='home'),
-    #path('login/', login_user, name='login'),
-    path('logout/', logout_user, name='logout'),
-    path('register/', register_user, name='register'),
-    path('record/<int:pk>', customer_record, name='record'),
-    path('admin/', admin.site.urls),
+    path("", home, name="home"),
+    # path('login/', login_user, name='login'),
+    path("logout/", logout_user, name="logout"),
+    path("register/", register_user, name="register"),
+    path("record/<int:pk>", customer_record, name="record"),
+    path("delete_record/<int:pk>", delete_record, name="delete_record"),
+    path("add_record/", add_record, name="add_record"),
+    path("admin/", admin.site.urls),
 ]
+

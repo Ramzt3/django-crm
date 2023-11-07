@@ -4,53 +4,74 @@ from django.contrib import messages
 from .forms import SignUpForm
 from .models import Record
 
+
 def home(request):
     records = Record.objects.all()
     # check if loggin
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
         # authenticate
         user = authenticate(request, username=username, password=password)
         if not user:
             messages.success(request, "invalid credential")
-            return redirect('home')
+            return redirect("home")
         else:
             login(request, user)
             messages.success(request, "you have been logged in")
-            return redirect('home')
+            return redirect("home")
     else:
-        return render(request, "home.html", {'records': records})
+        return render(request, "home.html", {"records": records})
+
 
 def login_user(request):
     pass
 
+
 def logout_user(request):
     logout(request)
     messages.success(request, "you have been logged out...")
-    return redirect('home')
+    return redirect("home")
+
 
 def register_user(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
             # Authenticate and login
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password1"]
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, "You have successfully registered welcome")
-            return redirect('home')
+            return redirect("home")
     else:
         form = SignUpForm()
-        return render(request, 'register.html', {'form': form}) 
-    return render(request, 'register.html', {'form': form}) 
+        return render(request, "register.html", {"form": form})
+    return render(request, "register.html", {"form": form})
+
 
 def customer_record(request, pk):
     if request.user.is_authenticated:
         customer_record = Record.objects.get(id=pk)
-        return render(request, 'record.html', {'customer_record': customer_record}) 
+        return render(request, "record.html", {"customer_record": customer_record})
     else:
         messages.success(request, "You must be logged in to view a page")
-        return redirect('home')
+        return redirect("home")
+
+
+def delete_record(request, pk):
+    if request.user.is_authenticated:
+        delete_it = Record.objects.get(id=pk)
+        delete_it.delete()
+        messages.success(request, "Record deleted successfully")
+        return redirect("home")
+    else:
+        messages.success(request, "You must have logged in")
+        return redirect("home")
+
+
+def add_record(request):
+    pass
+
